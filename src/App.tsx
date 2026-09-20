@@ -16,6 +16,8 @@ import { HijriConverterView } from './components/HijriConverterView';
 import { FalakCalculatorView } from './components/FalakCalculatorView';
 import { CalculationGuideView } from './components/CalculationGuideView';
 import { SettingsModal } from './components/SettingsModal';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { MobileInstallPrompt } from './components/MobileInstallPrompt';
 import { calculatePrayerTimes } from './utils/falakMath';
 import { soundSynth, showSystemNotification } from './utils/audioSynth';
 import { KemenagLogo } from './components/KemenagLogo';
@@ -35,12 +37,18 @@ export default function App() {
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.body.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.body.classList.remove('dark');
     }
-    const updated = { ...settings, darkMode };
-    setSettings(updated);
-    saveStoredSettings(updated);
+    setSettings((prev) => {
+      const updated = { ...prev, darkMode };
+      saveStoredSettings(updated);
+      return updated;
+    });
   }, [darkMode]);
 
   // Online / Offline listener
@@ -54,6 +62,9 @@ export default function App() {
 
   // Sync settings helper
   const handleUpdateSettings = (newSettings: AppSettings) => {
+    if (newSettings.darkMode !== darkMode) {
+      setDarkMode(newSettings.darkMode);
+    }
     setSettings(newSettings);
     saveStoredSettings(newSettings);
   };
@@ -163,7 +174,7 @@ export default function App() {
       )}
 
       {/* Main App Body */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 sm:pb-8">
         {activeTab === 'jadwal' && (
           <PrayerScheduleView
             selectedCity={settings.selectedCity}
@@ -214,14 +225,29 @@ export default function App() {
           <FalakCalculatorView selectedCity={settings.selectedCity} />
         )}
 
-        {activeTab === 'panduan' && <CalculationGuideView />}
+        {activeTab === 'panduan' && <CalculationGuideView initialModeBaca={false} />}
+
+        {activeTab === 'modebaca' && <CalculationGuideView initialModeBaca={true} />}
       </main>
+
+      {/* Mobile Android / iOS Bottom Navigation Dock */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenLocationModal={() => setActiveTab('peta')}
+      />
+
+      {/* Mobile PWA Install Prompt for Android & iOS */}
+      <MobileInstallPrompt />
 
       {/* Settings Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
         settings={settings}
+        darkMode={darkMode}
+        onToggleDarkMode={(val: boolean) => setDarkMode(val)}
         onSaveSettings={handleUpdateSettings}
         onSelectCity={handleSelectCity}
       />

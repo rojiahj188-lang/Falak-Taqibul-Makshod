@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "Falak Taqribul Maqshad",
+  "short_name": "FalakMaqshad",
+  "description": "Aplikasi hisab falak akurat jadwal salat, arah kiblat, rubu mujayyab, dan panduan kitab karya Syekh Mukhtar Al-Bogori",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#064e3b",
+  "theme_color": "#064e3b",
+  "categories": ["utilities", "education", "lifestyle"],
+  "icons": [
+    {
+      "src": "/logo-kemenag-custom.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-kemenag-custom.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

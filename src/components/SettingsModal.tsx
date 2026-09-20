@@ -29,7 +29,9 @@ import {
   MessageCircle,
   Building,
   Home,
-  Briefcase
+  Briefcase,
+  Smartphone,
+  Glasses
 } from 'lucide-react';
 import { AppSettings, CityLocation, FavoriteLocation, AppBackupPayload } from '../types';
 import { soundSynth, requestNotificationPermission } from '../utils/audioSynth';
@@ -47,6 +49,8 @@ interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   settings: AppSettings;
+  darkMode?: boolean;
+  onToggleDarkMode?: (val: boolean) => void;
   onSaveSettings: (newSettings: AppSettings) => void;
   onSelectCity?: (city: CityLocation) => void;
 }
@@ -55,13 +59,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
   settings,
+  darkMode,
+  onToggleDarkMode,
   onSaveSettings,
   onSelectCity
 }) => {
   if (!isOpen) return null;
 
   const [activeTab, setActiveTab] = useState<
-    'notif' | 'falak' | 'lokasi' | 'backup' | 'cloud' | 'export' | 'tentang'
+    'notif' | 'falak' | 'lokasi' | 'backup' | 'cloud' | 'export' | 'mobile' | 'tampilan' | 'tentang'
   >('backup');
   const [localSettings, setLocalSettings] = useState<AppSettings>({ ...settings });
   const [isSyncing, setIsSyncing] = useState(false);
@@ -395,6 +401,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             { id: 'falak', label: 'Parameter Falak', icon: Sliders },
             { id: 'cloud', label: 'Sinkronisasi Awan', icon: Cloud },
             { id: 'export', label: 'Ekspor Laporan', icon: Download },
+            { id: 'mobile', label: 'Android & iOS (PWA)', icon: Smartphone, badge: 'PWA' },
+            { id: 'tampilan', label: 'Tema Tampilan', icon: localSettings.darkMode ? Moon : Sun },
             { id: 'tentang', label: 'Profil Pengembang', icon: ShieldCheck }
           ].map((tab) => {
             const Icon = tab.icon;
@@ -1277,6 +1285,187 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     Unduh Excel (.xlsx)
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: DUKUNGAN PERANGKAT ANDROID & IOS (PWA) */}
+          {activeTab === 'mobile' && (
+            <div className="space-y-4">
+              <div className="rounded-2xl bg-gradient-to-r from-emerald-800 to-teal-900 p-4 text-white shadow-sm space-y-1">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="h-5 w-5 text-amber-300" />
+                  <span className="font-bold text-sm">Dukungan Penuh HP Android & Apple iOS</span>
+                </div>
+                <p className="text-xs text-emerald-100 leading-relaxed">
+                  Aplikasi Falak Taqribul Maqshad telah didukung arsitektur Progressive Web App (PWA) dengan Service Worker otomatis, penyimpanan data offline, dan navigasi seluler ergonomis untuk jempol tangan.
+                </p>
+              </div>
+
+              {/* Status Sistem Mobile */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-3.5 space-y-1 bg-white dark:bg-neutral-900 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-neutral-800 dark:text-neutral-200">
+                      Offline Storage & PWA
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Aktif
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                    Aplikasi tetap dapat digunakan menghitung hisab, azan, dan membaca kitab falak tanpa jaringan internet.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-3.5 space-y-1 bg-white dark:bg-neutral-900 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-xs text-neutral-800 dark:text-neutral-200">
+                      Navigasi Bawah Jempol
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Tersedia
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                    Bilah navigasi bawah (bottom dock) otomatis muncul di layar seluler dengan dukungan area poni/notch iPhone.
+                  </p>
+                </div>
+              </div>
+
+              {/* Petunjuk Pasang di Android & iOS */}
+              <div className="space-y-2">
+                <h4 className="font-bold text-xs text-neutral-900 dark:text-white">
+                  Panduan Pasang di Layar Utama HP:
+                </h4>
+
+                <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-3.5 space-y-2 bg-neutral-50/70 dark:bg-neutral-800/40">
+                  <div className="font-bold text-xs text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                    <span>📱 Perangkat Android (Google Chrome / Edge):</span>
+                  </div>
+                  <p className="text-[11px] text-neutral-600 dark:text-neutral-300">
+                    Buka peramban Chrome, ketuk menu titik tiga (⋮) di pojok kanan atas, lalu pilih <strong>"Instal Aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>. Ikon resmi aplikasi akan langsung muncul di menu HP Anda.
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-3.5 space-y-2 bg-neutral-50/70 dark:bg-neutral-800/40">
+                  <div className="font-bold text-xs text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                    <span>🍎 Perangkat Apple iOS (iPhone / iPad - Safari):</span>
+                  </div>
+                  <p className="text-[11px] text-neutral-600 dark:text-neutral-300">
+                    Buka di Safari, ketuk tombol <strong>Bagikan (Share)</strong> di bilah bawah layar, gulir ke bawah lalu pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong>. Aplikasi akan berjalan seperti aplikasi native layar penuh.
+                  </p>
+                </div>
+              </div>
+
+              {/* Mode Baca Info */}
+              <div className="rounded-xl border border-amber-300/40 bg-amber-50/60 dark:bg-amber-950/20 p-3.5 space-y-1.5 text-amber-950 dark:text-amber-200">
+                <div className="flex items-center gap-1.5 font-bold text-xs">
+                  <Glasses className="h-4 w-4 text-amber-600" />
+                  <span>Mode Baca Kitab (Reader Mode) Kini Aktif</span>
+                </div>
+                <p className="text-[11px] leading-relaxed">
+                  Gunakan tab <strong>"Mode Baca"</strong> di navigasi atas atau bilah bawah untuk membaca Matan Kitab Taqribul Maqshad dengan tema kertas hangat (Sepia), malam redup (Dark OLED), pembesaran huruf A-/A+, bookmark bab, serta pembacaan audio otomatis.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: TEMA TAMPILAN (MODE GELAP / TERANG) */}
+          {activeTab === 'tampilan' && (
+            <div className="space-y-4">
+              <div className="rounded-2xl bg-gradient-to-r from-emerald-800 to-teal-900 p-4 text-white shadow-sm space-y-1">
+                <div className="flex items-center gap-2">
+                  <Sun className="h-5 w-5 text-amber-300" />
+                  <span className="font-bold text-sm">Tema Tampilan (Mode Terang / Gelap)</span>
+                </div>
+                <p className="text-xs text-emerald-100 leading-relaxed">
+                  Pilih mode tampilan yang paling nyaman untuk mata Anda saat melakukan hisab falak, pengukuran arah kiblat di lapangan, atau pengkajian kitab.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {/* Mode Terang Option */}
+                <button
+                  type="button"
+                  id="btn-select-light-theme"
+                  onClick={() => {
+                    const next = { ...localSettings, darkMode: false };
+                    setLocalSettings(next);
+                    if (onToggleDarkMode) onToggleDarkMode(false);
+                    onSaveSettings(next);
+                  }}
+                  className={`rounded-2xl border p-4 text-left transition relative cursor-pointer ${
+                    !localSettings.darkMode
+                      ? 'border-emerald-500 bg-emerald-50/90 text-emerald-950 ring-2 ring-emerald-500/20 shadow-xs'
+                      : 'border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-xl bg-amber-100 text-amber-700">
+                        <Sun className="h-5 w-5" />
+                      </div>
+                      <span className="font-bold text-sm">Mode Terang (Siang)</span>
+                    </div>
+                    {!localSettings.darkMode && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Aktif
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-neutral-600 dark:text-neutral-300 leading-relaxed">
+                    Latar putih bersih dengan kontras tinggi. Sangat ideal untuk kalibrasi arah kiblat di bawah terik sinar matahari, membaca tabel hisab, dan mencetak dokumen sertifikat.
+                  </p>
+                </button>
+
+                {/* Mode Gelap Option */}
+                <button
+                  type="button"
+                  id="btn-select-dark-theme"
+                  onClick={() => {
+                    const next = { ...localSettings, darkMode: true };
+                    setLocalSettings(next);
+                    if (onToggleDarkMode) onToggleDarkMode(true);
+                    onSaveSettings(next);
+                  }}
+                  className={`rounded-2xl border p-4 text-left transition relative cursor-pointer ${
+                    localSettings.darkMode
+                      ? 'border-emerald-500 bg-neutral-900 text-white ring-2 ring-emerald-500/30 shadow-xs'
+                      : 'border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 rounded-xl bg-neutral-800 text-amber-400">
+                        <Moon className="h-5 w-5" />
+                      </div>
+                      <span className="font-bold text-sm text-neutral-900 dark:text-white">Mode Gelap (Malam / OLED)</span>
+                    </div>
+                    {localSettings.darkMode && (
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Aktif
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-300 leading-relaxed">
+                    Latar hitam pekat obsidian ramah mata di kegelapan. Menghemat konsumsi daya baterai gawai ponsel layar AMOLED/OLED dan nyaman saat mengkaji hisab malam hari.
+                  </p>
+                </button>
+              </div>
+
+              {/* Status Info Box */}
+              <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 p-3.5 bg-neutral-50/70 dark:bg-neutral-800/40 text-[11px] text-neutral-600 dark:text-neutral-300 space-y-1">
+                <span className="font-bold text-neutral-800 dark:text-neutral-200 block">
+                  Pintasan Tombol Cepat:
+                </span>
+                <p>
+                  Tombol ikon <strong>Matahari / Bulan</strong> di bilah navigasi atas (sebelah kanan status Awan) kini dapat diklik langsung kapan saja untuk beralih mode secara seketika.
+                </p>
               </div>
             </div>
           )}

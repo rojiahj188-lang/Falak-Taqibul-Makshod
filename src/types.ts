@@ -7,7 +7,8 @@ export type NavTab =
   | 'rubu'
   | 'kalender'
   | 'kalkulator'
-  | 'panduan';
+  | 'panduan'
+  | 'modebaca';
 
 export interface CityLocation {
   name: string;

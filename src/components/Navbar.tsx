@@ -14,7 +14,8 @@ import {
   CircleDot,
   Sparkles,
   Phone,
-  Award
+  Award,
+  Glasses
 } from 'lucide-react';
 import { CityLocation } from '../types';
 import { KemenagLogo } from './KemenagLogo';
@@ -50,7 +51,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'rubu', label: "Rubu' Mujayyab", icon: CircleDot },
     { id: 'kalender', label: 'Kalender Hijriah', icon: Calendar },
     { id: 'kalkulator', label: 'Kalkulator Falak', icon: Calculator },
-    { id: 'panduan', label: 'Panduan Kitab', icon: BookOpen }
+    { id: 'panduan', label: 'Panduan Kitab', icon: BookOpen },
+    { id: 'modebaca', label: 'Mode Baca', icon: Glasses, badge: 'Kitab' }
   ];
 
   return (
@@ -136,10 +138,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="btn-dark-toggle"
               onClick={() => setDarkMode(!darkMode)}
-              className="rounded-lg p-2 text-neutral-600 transition hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
-              aria-label="Toggle theme"
+              className="flex items-center justify-center rounded-lg border border-neutral-200/80 bg-white/90 p-2 text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/90 dark:text-neutral-200 dark:hover:bg-neutral-700 shadow-xs cursor-pointer"
+              title={darkMode ? 'Klik untuk beralih ke Mode Terang (Siang)' : 'Klik untuk beralih ke Mode Gelap (Malam)'}
+              aria-label={darkMode ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
             >
-              {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {darkMode ? (
+                <Sun className="h-4 w-4 text-amber-400 hover:scale-110 transition-transform" />
+              ) : (
+                <Moon className="h-4 w-4 text-emerald-600 hover:scale-110 transition-transform" />
+              )}
             </button>
 
             {/* Settings Modal Toggle */}
