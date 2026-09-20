@@ -1,0 +1,6 @@
+{
+  "name": "Falak Taqribul Maqshad",
+  "description": "Aplikasi hisab falak akurat berdasarkan Kitab Taqribul Maqshad karya Syekh Mukhtar Al-Bogori untuk jadwal salat, arah kiblat, kalender Hijriah, GPS peta otomatis, dan panduan hisab Rubu Mujayyab.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
